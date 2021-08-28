@@ -1,5 +1,14 @@
 import pygame
+'''
+MENU CLASS:
+* Main menu template for all menus
+*has definition for cursor rect box for future refference
+* Needs two helping functions (draw cursor, blit screen)
+* sets cursor as astrix 
+* draw cursor  
+* blit will display everything on users screen
 
+'''
 class Menu():
     def __init__(self, game):
         self.game = game
@@ -16,6 +25,16 @@ class Menu():
         pygame.display.update()
         self.game.reset_keys()
 
+'''
+MAIN MENU CLASS:
+* class main menu is first menu state user will see
+* sets the state as start
+* displays all text which can lead to different menu states
+* Move cursor to correct position on the left side of the text
+* check inputs checks which menu state you chose next
+* if 'start' is pressed then the 'game' running is set to false (menu system stops running and actual game appears)
+* if either options or credits are selected then menu state switches accordingly to menu selected
+'''
 class MainMenu(Menu):
     def __init__(self, game):
         Menu.__init__(self, game)
@@ -65,13 +84,19 @@ class MainMenu(Menu):
         self.move_cursor()
         if self.game.START_KEY:
             if self.state == 'Start':
-                self.game.playing = True
-
+                self.game.running = False
             elif self.state == 'Options':
                 self.game.curr_menu = self.game.options
             elif self.state == 'Credits':
                 self.game.curr_menu = self.game.credits
             self.run_display = False
+'''
+OPTIONS MENU CLASS:
+* options is selected and cursor is automatically on volume since its first option
+* check input registers the movement of cursor and not the selection of volume and controls menu since I haven't coded 
+what I want to appear yet  
+'''
+
 
 class OptionsMenu(Menu):
     def __init__(self, game):
@@ -107,7 +132,10 @@ class OptionsMenu(Menu):
         elif self.game.START_KEY:
             # TO-DO: Create a Volume Menu and a Controls Menu
             pass
-
+'''
+CREDITS MENU CLASS:
+* just simple text on screen saying my name 
+'''
 class CreditsMenu(Menu):
     def __init__(self, game):
         Menu.__init__(self, game)
@@ -123,3 +151,4 @@ class CreditsMenu(Menu):
             self.game.draw_text('Credits', 20, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2 - 20)
             self.game.draw_text('Made by Rohan Saberi', 15, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2 + 10)
             self.blit_screen()
+

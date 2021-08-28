@@ -5,8 +5,22 @@ import random
 pygame.font.init()
 
 from game import Game
+from pygame import mixer
+
 
 g = Game()
+
+
+while g.running:
+
+    g.curr_menu.display_menu()
+    g.game_loop()
+
+
+
+
+
+
 
 WIDTH, HEIGHT = 750, 750
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -112,6 +126,8 @@ class Player(Ship):
             else:
                 for obj in objs:
                     if laser.collision(obj):
+                        explosion_sound = mixer.Sound('explosion.wav')
+                        explosion_sound.play()
                         objs.remove(obj)
                         if laser in self.lasers:
                             self.lasers.remove(laser)
@@ -152,14 +168,6 @@ def collide(obj1, obj2):
     offset_y = obj2.y - obj1.y
     return obj1.mask.overlap(obj2.mask, (offset_x, offset_y)) != None
 
-
-
-
-
-while g.running:
-
-    g.curr_menu.display_menu()
-    g.game_loop()
 
 
 
@@ -241,7 +249,11 @@ def main():
         if keys[pygame.K_DOWN] and player.y + player_vel + player.get_height() + 15 < HEIGHT: # down
             player.y += player_vel
         if keys[pygame.K_SPACE]:
+            bullet_sound = mixer.Sound('laser.wav')
+            bullet_sound.play()
+
             player.shoot()
+
 
         for enemy in enemies[:]:
             enemy.move(enemy_vel)
@@ -251,6 +263,8 @@ def main():
                 enemy.shoot()
 
             if collide(enemy, player):
+                explosion_sound = mixer.Sound('explosion.wav')
+                explosion_sound.play()
                 player.health -= 10
                 enemies.remove(enemy)
             elif enemy.y + enemy.get_height() > HEIGHT:
@@ -259,6 +273,14 @@ def main():
 
         player.move_lasers(-laser_vel, enemies)
 
+
+#Background Sound
+pygame.mixer.music.set_volume(0.25)
+mixer.music.load('background.wav')
+mixer.music.play(-1)
+
+if g.alive == True:
+    main()
 
 
 

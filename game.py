@@ -1,8 +1,38 @@
 import pygame
-
-
 from menu import *
 
+
+'''
+TEST:
+* This was a test trying to link two files together so I can use class functions from to the other
+* This was to avoid a circular import 
+* Found this on a forum but it didn't work since mid way I thought of a easier solution 
+* Left it in for future documentation  
+'''
+from subprocess import call
+
+class CallPy(object):
+
+    def __init__(self, path = '/Users/PC/PycharmProjects/SchoolProject/main.py '):
+        self.path = path
+
+    def call_pyhton_file(self):
+        call(["Python3", "{}".format(self.path)])
+
+    if __name__ == "__main__":
+        c = CallPy()
+        c.call_python_file()
+
+'''
+GAME CLASS: 
+* Menu system and design
+* main_menu is the variable to reference my main menu object which won't change
+* curr_menu is the new old 'main_menu'
+* this allows my current menu variable to change depending on which menu I want selected giving it more flexibility
+* made a 'alive' variable to solve a window closing problem I had
+* it indicates if my program as a whole should still be running
+* game loop is the main loop for my menu system and stops playing and running once a transition has been made 
+'''
 class Game():
     def __init__(self):
         pygame.init()
@@ -16,19 +46,17 @@ class Game():
         self.BLACK, self.WHITE = (0, 0, 0), (255, 255, 255)
         self.main_menu = MainMenu(self)
         self.options = OptionsMenu(self)
-        self.credits  = CreditsMenu(self)
+        self.credits = CreditsMenu(self)
         self.curr_menu = self.main_menu
+        self.alive = True
 
     def game_loop(self):
         while self.playing:
             self.check_events()
             if self.START_KEY:
                 self.playing = False
-            self.display.fill(self.BLACK)
-            self.draw_text('Thanks for Playing', 20, self.DISPLAY_W/2, self.DISPLAY_H/2)
-            self.window.blit(self.display, (0,0))
-            pygame.display.update()
-            self.reset_keys()
+                self.running = False
+
 
 
 
@@ -37,6 +65,7 @@ class Game():
             if event.type == pygame.QUIT:
                 self.running, self.playing = False, False
                 self.curr_menu.run_display = False
+                self.alive = False
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RETURN:
                     self.START_KEY = True
@@ -56,3 +85,6 @@ class Game():
         text_rect = text_surface.get_rect()
         text_rect.center = (x,y)
         self.display.blit(text_surface,text_rect)
+
+
+
